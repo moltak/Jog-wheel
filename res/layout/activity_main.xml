@@ -8,9 +8,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".JOActivityMain" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+    <com.saturday9.jog.CircularSeekBar
+        android:id="@+id/circular_seekbar"
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
 
 </RelativeLayout>
