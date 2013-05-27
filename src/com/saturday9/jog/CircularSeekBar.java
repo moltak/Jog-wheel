@@ -252,10 +252,8 @@ public class CircularSeekBar extends View {
 		width = getWidth(); // Get View Width
 		height = getHeight();// Get View Height
 
-		int size = (width > height) ? height : width; // Choose the smaller
-		// between width and
-		// height to make a
-		// square
+		int size = (width > height) ? height : width; 
+		// Choose the smaller between width and height to make a square
 
 		float smallersize = 30;
 		cx = width / 2; // Center X for circle
@@ -305,11 +303,6 @@ public class CircularSeekBar extends View {
 	 *            the canvas
 	 */
 	public void drawMarkerAtProgress(Canvas canvas) {
-		//		if (IS_PRESSED) {
-		//			canvas.drawBitmap(progressMarkPressed, dx, dy, null);
-		//		} else {
-		//			canvas.drawBitmap(progressMark, dx, dy, null);
-		//		}
 		getGuidePosition();
 		Matrix matrix = new Matrix();
 		matrix.postRotate(angle);
