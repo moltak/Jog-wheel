@@ -41,7 +41,7 @@ public class CircularSeekBar extends View {
 
 	/** The text paint */
 	private Paint progressText;
-	
+
 	/** The text percentegy paint */
 	private Paint progressTextPercent;
 
@@ -80,7 +80,7 @@ public class CircularSeekBar extends View {
 
 	/** The circle's center Y coordinate */
 	private float cy;
-	
+
 	/** The progress guide point */
 	private float gx, gy;
 
@@ -161,11 +161,11 @@ public class CircularSeekBar extends View {
 		progressTextPercent = new Paint();
 
 		circleColor.setColor(Color.parseColor("#ff33b5e5")); // Set default
-																// progress
-																// color to holo
-																// blue.
+		// progress
+		// color to holo
+		// blue.
 		innerColor.setColor(Color.WHITE); // Set default background color to
-											// black
+		// black
 		circleRing.setColor(Color.GRAY);// Set default background color to Gray
 
 		circleColor.setAntiAlias(true);
@@ -176,13 +176,13 @@ public class CircularSeekBar extends View {
 		circleRing.setStrokeWidth(5);
 
 		circleColor.setStyle(Paint.Style.FILL);
-		
+
 		// inner circle
 		progressText.setAntiAlias(true);
 		progressText.setColor(Color.BLACK);
 		progressText.setTextSize(40);
 		progressText.setTextAlign(Align.CENTER);
-		
+
 		// text percent
 		progressTextPercent.setAntiAlias(true);
 		progressTextPercent.setColor(Color.BLACK);
@@ -251,11 +251,11 @@ public class CircularSeekBar extends View {
 
 		width = getWidth(); // Get View Width
 		height = getHeight();// Get View Height
-		
+
 		int size = (width > height) ? height : width; // Choose the smaller
-														// between width and
-														// height to make a
-														// square
+		// between width and
+		// height to make a
+		// square
 
 		float smallersize = 30;
 		cx = width / 2; // Center X for circle
@@ -291,10 +291,10 @@ public class CircularSeekBar extends View {
 		canvas.drawArc(rect, startAngle, angle, true, circleColor);
 		canvas.drawCircle(cx, cy, innerRadius, innerColor);
 		drawMarkerAtProgress(canvas);
-		
+
 		canvas.drawText(String.format("%dp", getProgress()), cx, cy, progressText);
 		canvas.drawText(String.format("%d %%", getProgressPercent()), dx, dy, progressTextPercent);
-		
+
 		super.onDraw(canvas);
 	}
 
@@ -305,11 +305,11 @@ public class CircularSeekBar extends View {
 	 *            the canvas
 	 */
 	public void drawMarkerAtProgress(Canvas canvas) {
-//		if (IS_PRESSED) {
-//			canvas.drawBitmap(progressMarkPressed, dx, dy, null);
-//		} else {
-//			canvas.drawBitmap(progressMark, dx, dy, null);
-//		}
+		//		if (IS_PRESSED) {
+		//			canvas.drawBitmap(progressMarkPressed, dx, dy, null);
+		//		} else {
+		//			canvas.drawBitmap(progressMark, dx, dy, null);
+		//		}
 		getGuidePosition();
 		Matrix matrix = new Matrix();
 		matrix.postRotate(angle);
@@ -368,14 +368,14 @@ public class CircularSeekBar extends View {
 		CALLED_FROM_ANGLE = true;
 		setProgress(Math.round(progress));
 	}
-	
+
 	private void getGuidePosition() {
 		gx = dx;
 		gy = dy;
-		
+
 		double cxx = markPointX - cx, cyy = markPointY - cy;
 		double distance = Math.sqrt((cxx * cxx) + (cyy * cyy));
-		
+
 		gx += (cx > dx) ? (-10) : (10);
 		gy += (cy > dy) ? (-10) : (10);
 	}
@@ -575,27 +575,20 @@ public class CircularSeekBar extends View {
 	 *            the up
 	 */
 	private void moved(float x, float y, boolean up) {
-		float distance = (float) Math.sqrt(Math.pow((x - cx), 2) + Math.pow((y - cy), 2));
-		if (distance < outerRadius + adjustmentFactor && distance > innerRadius - adjustmentFactor && !up) {
-			IS_PRESSED = true;
+//		float distance = (float) Math.sqrt(Math.pow((x - cx), 2) + Math.pow((y - cy), 2));
+		IS_PRESSED = true;
 
-			markPointX = x;
-			markPointY = y;
+		markPointX = x;
+		markPointY = y;
 
-			float degrees = (float) ((float) ((Math.toDegrees(Math.atan2(x - cx, cy - y)) + 360.0)) % 360.0);
-			// and to make it count 0-360
-			if (degrees < 0) {
-				degrees += 2 * Math.PI;
-			}
-
-			setAngle(Math.round(degrees));
-			invalidate();
-
-		} else {
-			IS_PRESSED = false;
-			invalidate();
+		float degrees = (float) ((float) ((Math.toDegrees(Math.atan2(x - cx, cy - y)) + 360.0)) % 360.0);
+		// and to make it count 0-360
+		if (degrees < 0) {
+			degrees += 2 * Math.PI;
 		}
 
+		setAngle(Math.round(degrees));
+		invalidate();
 	}
 
 	/**
