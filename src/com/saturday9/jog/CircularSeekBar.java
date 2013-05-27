@@ -12,6 +12,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Paint.Align;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +37,12 @@ public class CircularSeekBar extends View {
 
 	/** The progress circle ring background */
 	private Paint circleRing;
+
+	/** The text paint */
+	private Paint progressText;
+	
+	/** The text percentegy paint */
+	private Paint progressTextPercent;
 
 	/** The angle of progress */
 	private int angle = 0;
@@ -145,12 +153,14 @@ public class CircularSeekBar extends View {
 		circleColor = new Paint();
 		innerColor = new Paint();
 		circleRing = new Paint();
+		progressText = new Paint();
+		progressTextPercent = new Paint();
 
 		circleColor.setColor(Color.parseColor("#ff33b5e5")); // Set default
 																// progress
 																// color to holo
 																// blue.
-		innerColor.setColor(Color.BLACK); // Set default background color to
+		innerColor.setColor(Color.WHITE); // Set default background color to
 											// black
 		circleRing.setColor(Color.GRAY);// Set default background color to Gray
 
@@ -158,11 +168,21 @@ public class CircularSeekBar extends View {
 		innerColor.setAntiAlias(true);
 		circleRing.setAntiAlias(true);
 
-		circleColor.setStrokeWidth(5);
-		innerColor.setStrokeWidth(5);
+		circleColor.setStrokeWidth(50);
 		circleRing.setStrokeWidth(5);
 
 		circleColor.setStyle(Paint.Style.FILL);
+		
+		// inner circle
+		progressText.setAntiAlias(true);
+		progressText.setColor(Color.BLACK);
+		progressText.setTextSize(40);
+		progressText.setTextAlign(Align.CENTER);
+		
+		// text percent
+		progressTextPercent.setAntiAlias(true);
+		progressTextPercent.setColor(Color.BLACK);
+		progressTextPercent.setTextSize(20);
 	}
 
 	/**
@@ -237,7 +257,7 @@ public class CircularSeekBar extends View {
 		cy = height / 2; // Center Y for circle
 		outerRadius = size / 2; // Radius of the outer circle
 
-		innerRadius = outerRadius - barWidth; // Radius of the inner circle
+		innerRadius = outerRadius - barWidth - 20; // Radius of the inner circle
 
 		left = cx - outerRadius; // Calculate left bound of our rect
 		right = cx + outerRadius;// Calculate right bound of our rect
@@ -266,7 +286,10 @@ public class CircularSeekBar extends View {
 		canvas.drawArc(rect, startAngle, angle, true, circleColor);
 		canvas.drawCircle(cx, cy, innerRadius, innerColor);
 		drawMarkerAtProgress(canvas);
-
+		
+		canvas.drawText(String.format("%dp", getProgress()), cx, cy, progressText);
+		canvas.drawText(String.format("%d %%", getProgressPercent()), dx, dy, progressTextPercent);
+		
 		super.onDraw(canvas);
 	}
 
