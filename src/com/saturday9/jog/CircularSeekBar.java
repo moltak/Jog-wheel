@@ -153,7 +153,7 @@ public class CircularSeekBar extends View {
 
 			}
 		};
-
+		
 		circleColor = new Paint();
 		innerColor = new Paint();
 		circleRing = new Paint();
@@ -290,7 +290,11 @@ public class CircularSeekBar extends View {
 		canvas.drawCircle(cx, cy, innerRadius, innerColor);
 		drawMarkerAtProgress(canvas);
 
-		canvas.drawText(String.format("%dp", getProgress()), cx, cy, progressText);
+//		canvas.drawText(String.format("%dp", getProgress()), cx, cy, progressText);
+		canvas.drawText(String.format("angle: %d", angle), cx, cy, progressText);
+		canvas.drawText(String.format("marker: %d, %d", (int)gx, (int)gy), cx, cy + 50, progressText);
+		canvas.drawText(String.format("center: %d, %d", (int)cx, (int)cy), 300, 100, progressText);
+		canvas.drawText(String.format("outerradius: %f", outerRadius), 300, 150, progressText);
 		canvas.drawText(String.format("%d %%", getProgressPercent()), dx, dy, progressTextPercent);
 
 		super.onDraw(canvas);
@@ -363,14 +367,12 @@ public class CircularSeekBar extends View {
 	}
 
 	private void getGuidePosition() {
-		gx = dx;
-		gy = dy;
-
-		double cxx = markPointX - cx, cyy = markPointY - cy;
-		double distance = Math.sqrt((cxx * cxx) + (cyy * cyy));
-
-		gx += (cx > dx) ? (-10) : (10);
-		gy += (cy > dy) ? (-10) : (10);
+		float pointRadius = outerRadius + 20;
+		float triangle_size = 40;
+		double triangle_angle = Math.atan((triangle_size*0.5)/pointRadius) * 180 / Math.PI;
+		//angle = triangle_angle;
+		gx = cx + (float)((pointRadius * Math.sin((angle - triangle_angle)*(Math.PI)/180))) ;
+		gy = cy - (float)((pointRadius * Math.cos((angle - triangle_angle)*(Math.PI)/180))) ;
 	}
 
 	/**
@@ -568,7 +570,7 @@ public class CircularSeekBar extends View {
 	 *            the up
 	 */
 	private void moved(float x, float y, boolean up) {
-//		float distance = (float) Math.sqrt(Math.pow((x - cx), 2) + Math.pow((y - cy), 2));
+		//		float distance = (float) Math.sqrt(Math.pow((x - cx), 2) + Math.pow((y - cy), 2));
 		IS_PRESSED = true;
 
 		markPointX = x;
