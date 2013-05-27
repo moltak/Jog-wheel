@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Align;
@@ -79,6 +80,9 @@ public class CircularSeekBar extends View {
 
 	/** The circle's center Y coordinate */
 	private float cy;
+	
+	/** The progress guide point */
+	private float gx, gy;
 
 	/** The left bound for the circle RectF */
 	private float left;
@@ -231,7 +235,7 @@ public class CircularSeekBar extends View {
 	 * Inits the drawable.
 	 */
 	public void initDrawable() {
-		progressMark = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.scrubber_control_normal_holo);
+		progressMark = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.triangle);
 		progressMarkPressed = BitmapFactory.decodeResource(mContext.getResources(),
 				R.drawable.scrubber_control_pressed_holo);
 	}
@@ -247,17 +251,18 @@ public class CircularSeekBar extends View {
 
 		width = getWidth(); // Get View Width
 		height = getHeight();// Get View Height
-
+		
 		int size = (width > height) ? height : width; // Choose the smaller
 														// between width and
 														// height to make a
 														// square
 
+		float smallersize = 30;
 		cx = width / 2; // Center X for circle
 		cy = height / 2; // Center Y for circle
-		outerRadius = size / 2; // Radius of the outer circle
+		outerRadius = size / 2 - smallersize; // Radius of the outer circle
 
-		innerRadius = outerRadius - barWidth - 20; // Radius of the inner circle
+		innerRadius = outerRadius - barWidth - 40; // Radius of the inner circle
 
 		left = cx - outerRadius; // Calculate left bound of our rect
 		right = cx + outerRadius;// Calculate right bound of our rect
@@ -300,11 +305,16 @@ public class CircularSeekBar extends View {
 	 *            the canvas
 	 */
 	public void drawMarkerAtProgress(Canvas canvas) {
-		if (IS_PRESSED) {
-			canvas.drawBitmap(progressMarkPressed, dx, dy, null);
-		} else {
-			canvas.drawBitmap(progressMark, dx, dy, null);
-		}
+//		if (IS_PRESSED) {
+//			canvas.drawBitmap(progressMarkPressed, dx, dy, null);
+//		} else {
+//			canvas.drawBitmap(progressMark, dx, dy, null);
+//		}
+		getGuidePosition();
+		Matrix matrix = new Matrix();
+		matrix.postRotate(angle);
+		matrix.postTranslate(gx, gy);
+		canvas.drawBitmap(progressMark, matrix, null);
 	}
 
 	/**
@@ -357,6 +367,17 @@ public class CircularSeekBar extends View {
 		setProgressPercent(Math.round(donePercent));
 		CALLED_FROM_ANGLE = true;
 		setProgress(Math.round(progress));
+	}
+	
+	private void getGuidePosition() {
+		gx = dx;
+		gy = dy;
+		
+		double cxx = markPointX - cx, cyy = markPointY - cy;
+		double distance = Math.sqrt((cxx * cxx) + (cyy * cyy));
+		
+		gx += (cx > dx) ? (-10) : (10);
+		gy += (cy > dy) ? (-10) : (10);
 	}
 
 	/**
