@@ -10,11 +10,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.RadialGradient;
 import android.graphics.Paint.Align;
-import android.text.TextPaint;
+import android.graphics.Shader.TileMode;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -83,6 +86,9 @@ public class CircularSeekBar extends View {
 
 	/** The progress guide point */
 	private float gx, gy;
+	
+	/** The perenct text point */
+	private float ptx, pty;
 
 	/** The left bound for the circle RectF */
 	private float left;
@@ -164,10 +170,12 @@ public class CircularSeekBar extends View {
 		// progress
 		// color to holo
 		// blue.
-		innerColor.setColor(Color.WHITE); // Set default background color to
+		innerColor.setColor(0xfff1f1f1); // Set default background color to
 		// black
-		circleRing.setColor(Color.GRAY);// Set default background color to Gray
-
+		circleRing.setColor(0xfff7f7f7);// Set default background color to Gray
+//		LinearGradient gradation = new LinearGradient(0, 0, 500, 500, 0x80a9bb, 0x50b5e3, Shader.TileMode.REPEAT);
+//		RadialGradient gradation = new RadialGradient(0, 0, 100, Color.WHITE, Color.BLACK, TileMode.MIRROR);
+//		circleRing.setShader(gradation);
 		circleColor.setAntiAlias(true);
 		innerColor.setAntiAlias(true);
 		circleRing.setAntiAlias(true);
@@ -260,12 +268,12 @@ public class CircularSeekBar extends View {
 		cy = height / 2; // Center Y for circle
 		outerRadius = size / 2 - smallersize; // Radius of the outer circle
 
-		innerRadius = outerRadius - barWidth - 40; // Radius of the inner circle
+		innerRadius = outerRadius - barWidth - 30; // Radius of the inner circle
 
-		left = cx - outerRadius; // Calculate left bound of our rect
-		right = cx + outerRadius;// Calculate right bound of our rect
-		top = cy - outerRadius;// Calculate top bound of our rect
-		bottom = cy + outerRadius;// Calculate bottom bound of our rect
+		left = cx - outerRadius + 8; // Calculate left bound of our rect
+		right = cx + outerRadius - 8;// Calculate right bound of our rect
+		top = cy - outerRadius + 8;// Calculate top bound of our rect
+		bottom = cy + outerRadius - 8;// Calculate bottom bound of our rect
 
 		startPointX = cx; // 12 O'clock X coordinate
 		startPointY = cy - outerRadius;// 12 O'clock Y coordinate
@@ -291,11 +299,14 @@ public class CircularSeekBar extends View {
 		drawMarkerAtProgress(canvas);
 
 //		canvas.drawText(String.format("%dp", getProgress()), cx, cy, progressText);
-		canvas.drawText(String.format("angle: %d", angle), cx, cy, progressText);
-		canvas.drawText(String.format("marker: %d, %d", (int)gx, (int)gy), cx, cy + 50, progressText);
-		canvas.drawText(String.format("center: %d, %d", (int)cx, (int)cy), 300, 100, progressText);
-		canvas.drawText(String.format("outerradius: %f", outerRadius), 300, 150, progressText);
-		canvas.drawText(String.format("%d %%", getProgressPercent()), dx, dy, progressTextPercent);
+//		canvas.drawText(String.format("angle: %d", angle), cx, cy, progressText);
+//		canvas.drawText(String.format("marker: %d, %d", (int)gx, (int)gy), cx, cy + 50, progressText);
+//		canvas.drawText(String.format("center: %d, %d", (int)cx, (int)cy), 300, 100, progressText);
+//		canvas.drawText(String.format("outerradius: %f", outerRadius), 300, 150, progressText);
+		
+		getPercentPosition();
+		canvas.drawText(String.format("%dp", progress), cx, cy + (progressText.getTextSize() / 2), progressText);
+		canvas.drawText(String.format("%d %%", getProgressPercent()), ptx, pty, progressTextPercent);
 
 		super.onDraw(canvas);
 	}
@@ -367,12 +378,21 @@ public class CircularSeekBar extends View {
 	}
 
 	private void getGuidePosition() {
-		float pointRadius = outerRadius + 20;
+		float pointRadius = outerRadius + 30;
 		float triangle_size = 40;
 		double triangle_angle = Math.atan((triangle_size*0.5)/pointRadius) * 180 / Math.PI;
 		//angle = triangle_angle;
 		gx = cx + (float)((pointRadius * Math.sin((angle - triangle_angle)*(Math.PI)/180))) ;
 		gy = cy - (float)((pointRadius * Math.cos((angle - triangle_angle)*(Math.PI)/180))) ;
+	}
+	
+	private void getPercentPosition() {
+		float pointRadius = outerRadius - 20;
+		float triangle_size = 40;
+		double triangle_angle = Math.atan((triangle_size*0.5)/pointRadius) * 180 / Math.PI;
+		//angle = triangle_angle;
+		ptx = cx + (float)((pointRadius * Math.sin((angle)*(Math.PI)/180))) ;
+		pty = cy - (float)((pointRadius * Math.cos((angle)*(Math.PI)/180))) ;
 	}
 
 	/**
