@@ -1,10 +1,10 @@
 package com.saturday9.jog;
 
-import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
+import android.os.Bundle;
 import android.view.View;
-import android.widget.SeekBar;
+
+import com.saturday9.jog.CircularSeekBar.OnSeekChangeListener;
 
 public class JOActivityMain extends Activity {
 	
@@ -19,6 +19,12 @@ public class JOActivityMain extends Activity {
 		circularSeekBar.setMaxProgress(100);
 		circularSeekBar.setProgress(50);
 		circularSeekBar.invalidate();
+		circularSeekBar.setSeekBarChangeListener(new OnSeekChangeListener() {
+			@Override
+			public void onProgressChange(CircularSeekBar view, int newProgress) {
+				System.out.println(newProgress);
+			}
+		});
 	}
 
 	public void onButtonClicked(View view) {
